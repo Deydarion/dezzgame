@@ -63,7 +63,11 @@ pm2 logs deezgame-server
 ## 5. Настроить Nginx
 
 ```bash
-# Скопировать конфигурацию
+# Удалить старую конфигурацию если есть
+sudo rm -f /etc/nginx/sites-enabled/deezgame
+sudo rm -f /etc/nginx/sites-enabled/default
+
+# Скопировать конфигурацию (БЕЗ SSL - certbot добавит его автоматически)
 sudo cp ~/apps/dezzgame/nginx-deezgame.conf /etc/nginx/sites-available/deezgame
 
 # Активировать
@@ -74,9 +78,26 @@ sudo nginx -t
 
 # Перезапустить Nginx
 sudo systemctl restart nginx
+
+# Проверить статус
+sudo systemctl status nginx
 ```
 
 ## 6. Установить SSL
+
+**⚠️ ВАЖНО:** Перед установкой SSL убедитесь что DNS настроен (шаг 7)!  
+Подождите 5-10 минут после настройки DNS, затем проверьте:
+
+```bash
+# Проверить DNS
+dig deezgame.ru +short
+# Должно вернуть: 109.172.37.254
+
+ping deezgame.ru
+# Должен пинговаться
+```
+
+Если DNS работает, устанавливайте SSL:
 
 ```bash
 # Установить Certbot (если еще не установлен)
@@ -90,6 +111,11 @@ sudo certbot --nginx -d deezgame.ru -d www.deezgame.ru
 # 2. Согласитесь с условиями (A)
 # 3. Выберите опцию редиректа (2)
 ```
+
+Certbot автоматически:
+- ✅ Получит SSL сертификат от Let's Encrypt
+- ✅ Обновит конфигурацию Nginx
+- ✅ Добавит HTTPS и redirect с HTTP на HTTPS
 
 ## 7. Проверить DNS
 

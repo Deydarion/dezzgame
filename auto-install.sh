@@ -94,20 +94,26 @@ npm run build
 # 13. Настройка Nginx
 echo "📦 13. Настройка Nginx..."
 cat > /etc/nginx/sites-available/deezgame << 'EOFNGINX'
-# HTTP -> HTTPS redirect
+# Конфигурация БЕЗ SSL (certbot добавит HTTPS автоматически)
 server {
     listen 80;
     listen [::]:80;
     server_name deezgame.ru www.deezgame.ru;
     
-    # Временно отдаем статику для проверки (потом будет redirect на HTTPS)
+    # Статические файлы клиента
     root /root/apps/dezzgame/client/dist;
     index index.html;
     
+    # Gzip compression
+    gzip on;
+    gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript;
+    
+    # Основной роут для клиента
     location / {
         try_files $uri $uri/ /index.html;
     }
     
+    # WebSocket и API проксирование на backend
     location /socket.io/ {
         proxy_pass http://localhost:3001;
         proxy_http_version 1.1;
@@ -122,12 +128,23 @@ server {
         proxy_send_timeout 7d;
         proxy_read_timeout 7d;
     }
+    
+    # API endpoints (если есть)
+    location /api/ {
+        proxy_pass http://localhost:3001;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
 }
 EOFNGINX
 
-# Активация конфигурации
-ln -sf /etc/nginx/sites-available/deezgame /etc/nginx/sites-enabled/
+# Удаление старых конфигураций
+rm -f /etc/nginx/sites-enabled/deezgame
 rm -f /etc/nginx/sites-enabled/default
+
+# Активация конфигурации
+ln -s /etc/nginx/sites-available/deezgame /etc/nginx/sites-enabled/
 
 # Проверка и перезапуск Nginx
 nginx -t
