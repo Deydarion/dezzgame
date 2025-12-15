@@ -223,9 +223,6 @@ function GameBoard({ socket, sessionId, gameState: propGameState, playerId }: Ga
         }, 1000) // Show after animations complete
       }
       
-      // Store move data for animation
-      setPendingMoveData(data)
-      
       // Start animation for the moved piece
       const { move, gameState: newState, captured } = data
       
@@ -273,9 +270,6 @@ function GameBoard({ socket, sessionId, gameState: propGameState, playerId }: Ga
       
       // Don't update game state here - turnEnded will handle it with correct state
       // Animations will still work because they use the data from moveApplied event
-      setTimeout(() => {
-        setPendingMoveData(null)
-      }, 100)
     }
     
     const startPieceAnimation = (pieceId: string, fullPath: number[]) => {
