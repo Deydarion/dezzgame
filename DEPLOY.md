@@ -100,7 +100,10 @@ cd dezzgame
 **Альтернатива:** Если репозиторий приватный или вы загружаете через FTP/SFTP:
 ```bash
 # Используйте FileZilla, WinSCP или scp команду
-scp -r /local/path/chess "C:/Visual Studio Projects/chess" username@server_ip:~/apps/
+# На вашей локальной Windows машине:
+scp -r "C:\Visual Studio Projects\chess" username@server_ip:~/apps/dezzgame
+
+# Или используйте WinSCP / FileZilla для графической загрузки
 ```
 
 ---
