@@ -162,7 +162,7 @@ nano src/App.tsx
 
 Найдите строку с подключением Socket.IO и измените на ваш домен:
 ```typescript
-const newSocket = io('https://your-domain.com', {  // Было: 'http://localhost:3001'
+const newSocket = io('https://deezgame.ru', {  // Было: 'http://localhost:3001'
   transports: ['websocket', 'polling'],
   // ...
 })
@@ -245,7 +245,7 @@ sudo nano /etc/nginx/sites-available/chess-game
 server {
     listen 80;
     listen [::]:80;
-    server_name your-domain.com www.your-domain.com;
+    server_name deezgame.ru www.deezgame.ru;
     
     return 301 https://$server_name$request_uri;
 }
@@ -254,11 +254,11 @@ server {
 server {
     listen 443 ssl http2;
     listen [::]:443 ssl http2;
-    server_name your-domain.com www.your-domain.com;
+    server_name deezgame.ru www.deezgame.ru;
 
     # SSL сертификаты (после установки Certbot)
-    ssl_certificate /etc/letsencrypt/live/your-domain.com/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/your-domain.com/privkey.pem;
+    ssl_certificate /etc/letsencrypt/live/deezgame.ru/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/deezgame.ru/privkey.pem;
     
     # SSL настройки
     ssl_protocols TLSv1.2 TLSv1.3;
@@ -266,7 +266,7 @@ server {
     ssl_ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256;
 
     # Статические файлы клиента
-    root /home/username/apps/chess/client/dist;
+    root /root/apps/dezzgame/client/dist;
     index index.html;
 
     # Gzip compression
@@ -337,7 +337,7 @@ sudo apt install -y certbot python3-certbot-nginx
 ### Получение сертификата
 ```bash
 # Автоматическая установка SSL с Certbot
-sudo certbot --nginx -d your-domain.com -d www.your-domain.com
+sudo certbot --nginx -d deezgame.ru -d www.deezgame.ru
 
 # Следуйте инструкциям:
 # 1. Введите email
@@ -382,7 +382,7 @@ sudo systemctl status certbot.timer
    ```
    Type: CNAME
    Host: game
-   Value: your-domain.com
+   Value: deezgame.ru
    TTL: Automatic
    ```
 
@@ -393,8 +393,8 @@ sudo systemctl status certbot.timer
 ### Проверка DNS
 ```bash
 # Проверка A-записи
-dig your-domain.com +short
-nslookup your-domain.com
+dig deezgame.ru +short
+nslookup deezgame.ru
 
 # Должен вернуться IP вашего сервера
 ```
@@ -524,7 +524,7 @@ npm install
    ```typescript
    const io = new Server(httpServer, {
      cors: {
-       origin: ['https://your-domain.com', 'https://www.your-domain.com'],
+       origin: ['https://deezgame.ru', 'https://www.deezgame.ru'],
        methods: ['GET', 'POST'],
        credentials: true
      }
@@ -559,7 +559,7 @@ sudo chown -R www-data:www-data ~/apps/chess/client/dist
 sudo certbot certificates
 
 # Перевыпуск сертификата
-sudo certbot --nginx --force-renewal -d your-domain.com
+sudo certbot --nginx --force-renewal -d deezgame.ru
 
 # Проверка Nginx конфига
 sudo nginx -t
@@ -640,7 +640,7 @@ df -h
 ## 🎉 Готово!
 
 Теперь ваша игра доступна по адресу:
-- **HTTPS:** https://your-domain.com
+- **HTTPS:** https://deezgame.ru
 - **HTTP:** автоматически редиректится на HTTPS
 
 ### Полезные ссылки:

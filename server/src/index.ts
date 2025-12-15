@@ -15,7 +15,12 @@ const httpServer = createServer(app)
 // CORS configuration
 const io = new Server(httpServer, {
   cors: {
-    origin: ['http://localhost:3000', 'http://127.0.0.1:3000'],
+    origin: [
+      'http://localhost:3000', 
+      'http://127.0.0.1:3000',
+      'https://deezgame.ru',
+      'https://www.deezgame.ru'
+    ],
     methods: ['GET', 'POST'],
     credentials: true,
     allowedHeaders: ['*']

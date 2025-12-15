@@ -25,7 +25,11 @@ function AppRouter() {
     }
 
     // Connect to server
-    const newSocket = io('http://localhost:3001', {
+    const serverUrl = import.meta.env.MODE === 'production' 
+      ? 'https://deezgame.ru' 
+      : 'http://localhost:3001'
+    
+    const newSocket = io(serverUrl, {
       transports: ['polling', 'websocket'], // Try polling first, then websocket
       reconnection: true,
       reconnectionDelay: 1000,
