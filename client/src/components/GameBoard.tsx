@@ -28,7 +28,6 @@ function GameBoard({ socket, sessionId, gameState: propGameState, playerId }: Ga
   const [animatingPiecePath, setAnimatingPiecePath] = useState<number[]>([]) // Full path of board indices
   const [animatingPieceStep, setAnimatingPieceStep] = useState<number>(0) // Current step in path
   const [captureParticles, setCaptureParticles] = useState<Array<{ id: string; x: number; y: number; color: 'blue' | 'red' }>>([])
-  const [pendingMoveData, setPendingMoveData] = useState<any>(null)
   const [showWinner, setShowWinner] = useState<{ winner: string; isMe: boolean } | null>(null)
 
   // Local game state reference
@@ -240,7 +239,6 @@ function GameBoard({ socket, sessionId, gameState: propGameState, playerId }: Ga
             const oldPiece = gameState?.players.flatMap(p => p.pieces).find(p => p.id === move.pieceId)
             if (oldPiece && oldPiece.pathIndex !== null) {
               const oldBoardIndex = pathToBoardIndex(oldPiece.pathIndex, player.side)
-              const newBoardIndex = move.targetIndex
               const newPathIndex = piece.pathIndex
               
               // Calculate trail
@@ -360,28 +358,6 @@ function GameBoard({ socket, sessionId, gameState: propGameState, playerId }: Ga
     ]
     
     return side === 'A' ? mappingA[pathIndex] : mappingB[pathIndex]
-  }
-
-  // Convert boardIndex back to pathIndex
-  const boardToPathIndex = (boardIndex: number, side: PlayerSide): number => {
-    const mappingA = [
-      56, 57, 58, 59, 60, 61, 62, 63,
-      55, 47, 39, 31, 23, 15, 7,
-      6, 5, 4, 3, 2, 1, 0,
-      8, 16, 24, 32, 40, 48,
-      56, 49, 42, 35
-    ]
-    
-    const mappingB = [
-      7, 6, 5, 4, 3, 2, 1, 0,
-      8, 16, 24, 32, 40, 48, 56,
-      57, 58, 59, 60, 61, 62, 63,
-      55, 47, 39, 31, 23, 15,
-      7, 14, 21, 28
-    ]
-    
-    const mapping = side === 'A' ? mappingA : mappingB
-    return mapping.indexOf(boardIndex)
   }
 
   // Calculate trail board indices for animation

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { BrowserRouter, Routes, Route, useNavigate, useParams } from 'react-router-dom'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { io, Socket } from 'socket.io-client'
 import MainMenu from './components/MainMenu'
 import GamePage from './components/GamePage'
