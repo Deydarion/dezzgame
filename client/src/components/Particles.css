@@ -1,0 +1,46 @@
+.particles-container {
+  position: absolute;
+  width: 12.5%;
+  height: 12.5%;
+  pointer-events: none;
+  z-index: 20;
+}
+
+.particle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  animation: particleExplode 0.8s ease-out forwards;
+}
+
+.particle-blue {
+  background: radial-gradient(circle, #60a5fa, #3b82f6);
+  box-shadow: 0 0 8px #3b82f6, 0 0 12px #60a5fa;
+}
+
+.particle-red {
+  background: radial-gradient(circle, #f87171, #ef4444);
+  box-shadow: 0 0 8px #ef4444, 0 0 12px #f87171;
+}
+
+@keyframes particleExplode {
+  0% {
+    transform: translate(-50%, -50%) translate(0, 0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%) 
+               translate(
+                 calc(cos(var(--angle)) * var(--velocity)),
+                 calc(sin(var(--angle)) * var(--velocity))
+               )
+               scale(0);
+    opacity: 0;
+  }
+}
+
+
+

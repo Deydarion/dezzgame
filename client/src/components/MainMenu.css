@@ -1,0 +1,140 @@
+.main-menu {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #1a1a1a;
+  color: #ffffff;
+  position: relative;
+}
+
+.disclaimer {
+  position: absolute;
+  top: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.2) 0%, rgba(220, 38, 38, 0.2) 100%);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  border-radius: 8px;
+  font-size: 0.9rem;
+  color: #fca5a5;
+  text-align: center;
+  backdrop-filter: blur(10px);
+  z-index: 10;
+}
+
+.stats-panel {
+  position: absolute;
+  top: 2rem;
+  right: 2rem;
+  display: flex;
+  gap: 2rem;
+  padding: 1rem 1.5rem;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  backdrop-filter: blur(10px);
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.stat-label {
+  font-size: 0.75rem;
+  color: #999;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.stat-value {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.menu-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4rem;
+  padding: 2rem;
+}
+
+.menu-title {
+  font-size: 4rem;
+  font-weight: 300;
+  letter-spacing: 4px;
+  margin: 0;
+  color: #ffffff;
+}
+
+.menu-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 320px;
+}
+
+.menu-button {
+  padding: 1.25rem 2rem;
+  font-size: 1.125rem;
+  font-weight: 500;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  background-color: #2a2a2a;
+  color: #ffffff;
+}
+
+.menu-button.primary {
+  background-color: #ffffff;
+  color: #1a1a1a;
+}
+
+.menu-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.menu-button:active {
+  transform: translateY(0);
+}
+
+.menu-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+@media (max-width: 768px) {
+  .stats-panel {
+    top: 1rem;
+    right: 1rem;
+    gap: 1rem;
+    padding: 0.75rem 1rem;
+  }
+
+  .stat-value {
+    font-size: 1.25rem;
+  }
+
+  .menu-title {
+    font-size: 2.5rem;
+  }
+
+  .menu-buttons {
+    max-width: 100%;
+  }
+}
+
+
+
