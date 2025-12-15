@@ -93,8 +93,8 @@ mkdir -p ~/apps
 cd ~/apps
 
 # Клонируем проект
-git clone https://github.com/your-username/chess-game.git
-cd chess-game
+git clone https://github.com/Deydarion/dezzgame.git
+cd dezzgame
 ```
 
 **Альтернатива:** Если репозиторий приватный или вы загружаете через FTP/SFTP:
