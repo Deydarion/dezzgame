@@ -25,15 +25,16 @@ function AppRouter() {
     }
 
     // Connect to server
-    const serverUrl = import.meta.env.MODE === 'production' 
-      ? 'https://deezgame.ru' 
+    const serverUrl = process.env.NODE_ENV === 'production'
+      ? 'https://deezgame.ru'
       : 'http://localhost:3001'
     
     const newSocket = io(serverUrl, {
       transports: ['polling', 'websocket'], // Try polling first, then websocket
       reconnection: true,
       reconnectionDelay: 1000,
-      reconnectionAttempts: 5,
+      reconnectionAttempts: Infinity, // Бесконечные попытки переподключения
+      reconnectionDelayMax: 5000, // Максимальная задержка между попытками
       timeout: 20000, // 20 seconds timeout
       forceNew: false,
       autoConnect: true
@@ -67,34 +68,41 @@ function AppRouter() {
     newSocket.on('connect_error', (error) => {
       console.error('Connection error:', error.message)
       console.error('Error details:', error)
-      setConnected(false)
       
-      if (error.message.includes('timeout') || error.message.includes('ECONNREFUSED') || error.message.includes('Failed to fetch') || error.message.includes('server error')) {
-        setConnectionError('⚠️ Server is not running. Open a terminal and run: cd server && npm run dev')
-      } else {
-        setConnectionError(`Connection error: ${error.message}`)
+      // Не показываем ошибки "Session ID unknown" - это нормально при переподключении
+      if (error.message.includes('Session ID unknown') || error.message.includes('xhr poll error')) {
+        console.log('Reconnecting... (Session ID unknown is normal after server restart)')
+        setConnectionError(null) // Не показываем эту ошибку пользователю
+        return
       }
       
-      // Try to check if server is reachable
-      fetch('http://localhost:3001/health')
-        .then(async res => {
-          const contentType = res.headers.get('content-type')
-          if (contentType && contentType.includes('application/json')) {
-            const data = await res.json()
-            console.log('Server health check:', data)
-            setConnectionError(null) // Server is reachable, connection issue might be temporary
-          } else {
-            // Server returned HTML instead of JSON - probably wrong port or proxy issue
-            console.error('Server returned HTML instead of JSON. Check if server is running on port 3001')
-          }
-        })
-        .catch(err => {
-          console.error('Server is not reachable. Make sure server is running on port 3001:', err.message)
-        })
+      setConnected(false)
+      
+      // Показываем ошибку только для серьезных проблем
+      if (error.message.includes('timeout') || error.message.includes('ECONNREFUSED') || error.message.includes('Failed to fetch')) {
+        if (process.env.NODE_ENV === 'production') {
+          setConnectionError('⚠️ Подключение к серверу... Пожалуйста, подождите.')
+        } else {
+          setConnectionError('⚠️ Server is not running. Open a terminal and run: cd server && npm run dev')
+        }
+      } else if (!error.message.includes('Session ID unknown')) {
+        // Показываем другие ошибки только если это не переподключение
+        console.error('Connection error (will retry):', error.message)
+      }
     })
 
-    newSocket.on('reconnect', () => {
-      console.log('Reconnected to server')
+    newSocket.on('reconnect_attempt', (attemptNumber) => {
+      console.log(`Reconnection attempt ${attemptNumber}...`)
+      if (attemptNumber === 1) {
+        setConnectionError('🔄 Переподключение к серверу...')
+      }
+    })
+
+    newSocket.on('reconnect', (attemptNumber) => {
+      console.log(`Reconnected to server after ${attemptNumber} attempts`)
+      setConnected(true)
+      setConnectionError(null) // Убираем ошибку при успешном переподключении
+      
       const playerId = localStorage.getItem('playerId')
       if (playerId) {
         newSocket.emit('registerPlayer', { playerId })
@@ -107,6 +115,11 @@ function AppRouter() {
         const sessionId = match[1]
         newSocket.emit('reconnectToMatch', { sessionId, playerId })
       }
+    })
+
+    newSocket.on('reconnect_failed', () => {
+      console.error('Failed to reconnect after all attempts')
+      setConnectionError('⚠️ Не удалось подключиться к серверу. Пожалуйста, обновите страницу.')
     })
 
     newSocket.on('stats', (newStats: GameStats) => {
